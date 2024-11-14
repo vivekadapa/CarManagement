@@ -5,6 +5,7 @@ import db from '../db/connectDb';
 import { Request, Response } from 'express';
 import { z } from 'zod';
 
+
 export const Signup = async (req: Request, res: Response) => {
     try {
         const { email, password } = signupSchema.parse(req.body);

@@ -8,11 +8,17 @@ import {
     updateCar,
     deleteCar,
 } from '../controllers/carController';
+import multer from 'multer'
+
+
+const upload = multer({ dest: 'uploads/' });
+
+
 
 const router = Router();
 
 //@ts-ignore
-router.post('/', verifyToken, addCar);
+router.post('/', verifyToken, upload.array('images', 10), addCar);
 //@ts-ignore
 router.get('/', verifyToken, getUserCars);
 //@ts-ignore

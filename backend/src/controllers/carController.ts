@@ -1,23 +1,36 @@
 import { Request, Response } from 'express';
 import db from '../db/connectDb';
 import { AuthRequest } from '../middleware/verifyToken';
+import cloudinary from '../utils/cloudinaryConfig';
 
 
 export const addCar = async (req: AuthRequest, res: Response) => {
     try {
-        const { title, description, images, car_type, company, dealer } = req.body;
-
+        const { title, description, car_type, company, dealer } = req.body;
+        console.log(req.files);
         if (!req.userId) return res.status(401).json({ error: "Unauthorized" });
 
-        if (images && images.length > 10) {
+        //@ts-ignore
+        if (req?.files?.length > 10) {
             return res.status(400).json({ error: "You can upload a maximum of 10 images" });
         }
+
+        const imageUrls = [];
+        //@ts-ignore
+        for (const file of req.files) {
+            const result = await cloudinary.uploader.upload(file.path, {
+                folder: 'cars'
+            });
+            imageUrls.push(result.secure_url);
+        }
+
+        console.log(imageUrls);
 
         const newCar = await db.car.create({
             data: {
                 title,
                 description,
-                images,
+                images: imageUrls,
                 car_type,
                 company,
                 dealer,
@@ -50,7 +63,7 @@ export const getUserCars = async (req: AuthRequest, res: Response) => {
 export const searchCars = async (req: Request, res: Response) => {
     const { keyword } = req.query;
 
-    if (!keyword) return res.status(400).json({ error: "Keyword is required" });
+    // if (!keyword) return res.status(400).json({ error: "Keyword is required" });
 
     try {
         const cars = await db.car.findMany({
