@@ -7,21 +7,28 @@ import cloudinary from '../utils/cloudinaryConfig';
 export const addCar = async (req: AuthRequest, res: Response) => {
     try {
         const { title, description, car_type, company, dealer } = req.body;
-        console.log(req.files);
         if (!req.userId) return res.status(401).json({ error: "Unauthorized" });
 
         //@ts-ignore
         if (req?.files?.length > 10) {
             return res.status(400).json({ error: "You can upload a maximum of 10 images" });
         }
-
+        console.log(req.files)
         const imageUrls = [];
-        //@ts-ignore
-        for (const file of req.files) {
-            const result = await cloudinary.uploader.upload(file.path, {
-                folder: 'cars'
-            });
-            imageUrls.push(result.secure_url);
+
+        try {
+            //@ts-ignore
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'cars'
+                });
+                imageUrls.push(result.secure_url);
+            }
+
+        }
+        catch (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Error uploading images" })
         }
 
         console.log(imageUrls);

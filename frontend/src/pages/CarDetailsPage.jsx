@@ -11,7 +11,7 @@ const CarDetailsPage = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
     const token = localStorage.getItem('token')
-    
+
     useEffect(() => {
         const fetchCarDetails = async () => {
             try {
@@ -48,10 +48,15 @@ const CarDetailsPage = () => {
     }
 
     const handleEdit = () => {
-        navigate(`/editCar/${carId}`)  // Navigate to the edit page (create this page later)
+        navigate(`/editCar/${carId}`)
     }
 
-    if (loading) return <div>Loading...</div>
+    if (loading) return (
+        <div className='min-h-screen flex justify-center items-center'>
+            <img className='w-16 h-16' src='./assets/Rolling.svg' alt="loading gif" />
+        </div>
+    )
+
     if (error) return <div>{error}</div>
 
     return (
