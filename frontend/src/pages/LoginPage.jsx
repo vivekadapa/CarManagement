@@ -1,7 +1,5 @@
-
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginPage = () => {
@@ -9,11 +7,37 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
+
+    const validateEmail = (email) => {
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 6;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setEmailError('');
+        setPasswordError('');
+
+        if (!validateEmail(email)) {
+            setEmailError('Please enter a valid email address.');
+            setLoading(false);
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setPasswordError('Password must be at least 6 characters.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, {
                 email,
@@ -24,7 +48,6 @@ const LoginPage = () => {
             localStorage.setItem('token', response.data.token);
             navigate('/');
         } catch (error) {
-            console.log(error)
             setLoading(false);
             setError(error.response?.data?.message || 'Login failed. Please try again.');
         }
@@ -34,20 +57,14 @@ const LoginPage = () => {
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-12 sm:px-6 lg:px-8">
             <div className="w-full max-w-md space-y-8 bg-white rounded-2xl shadow-lg p-8">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Welcome back
-                    </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        Enter your credentials to access your account
-                    </p>
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Welcome back</h2>
+                    <p className="mt-2 text-center text-sm text-gray-600">Enter your credentials to access your account</p>
                 </div>
 
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-4 rounded-md">
                         <div>
-                            <label htmlFor="email" className="sr-only">
-                                Email address
-                            </label>
+                            <label htmlFor="email" className="sr-only">Email address</label>
                             <input
                                 id="email"
                                 name="email"
@@ -58,12 +75,11 @@ const LoginPage = () => {
                                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
                             />
+                            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                         </div>
 
                         <div>
-                            <label htmlFor="password" className="sr-only">
-                                Password
-                            </label>
+                            <label htmlFor="password" className="sr-only">Password</label>
                             <input
                                 id="password"
                                 name="password"
@@ -74,6 +90,7 @@ const LoginPage = () => {
                                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
                             />
+                            {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                         </div>
                     </div>
 

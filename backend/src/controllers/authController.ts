@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { loginSchema, signupSchema } from '../schemas/authSchema';
+import { authSchema } from '../schemas/authSchema';
 import db from '../db/connectDb';
 import { Request, Response } from 'express';
 import { z } from 'zod';
@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 export const Signup = async (req: Request, res: Response) => {
     try {
-        const { email, password } = signupSchema.parse(req.body);
+        const { email, password } = authSchema.parse(req.body);
         const existingUser = await db.user.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ error: "Email already in use" });
@@ -38,7 +38,7 @@ export const Signup = async (req: Request, res: Response) => {
 
 export const Login = async (req: Request, res: Response) => {
     try {
-        const { email, password } = loginSchema.parse(req.body);
+        const { email, password } = authSchema.parse(req.body);
         const user = await db.user.findUnique({ where: { email } });
         if (!user) {
             return res.status(400).json({ error: "Invalid email or password" });

@@ -7,18 +7,43 @@ const SignupPage = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const navigate = useNavigate();
+
+    const validateEmail = (email) => {
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return regex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 6;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setEmailError('');
+        setPasswordError('');
+
+        if (!validateEmail(email)) {
+            setEmailError('Please enter a valid email address.');
+            setLoading(false);
+            return;
+        }
+
+        if (!validatePassword(password)) {
+            setPasswordError('Password must be at least 6 characters.');
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
                 email,
                 password,
             });
-    
+
             setLoading(false);
             localStorage.setItem('token', response.data.token);
             navigate('/');
@@ -53,6 +78,7 @@ const SignupPage = () => {
                                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="Email address"
                             />
+                            {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                         </div>
 
                         <div>
@@ -69,6 +95,7 @@ const SignupPage = () => {
                                 className="appearance-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 placeholder="Password"
                             />
+                            {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                         </div>
                     </div>
 

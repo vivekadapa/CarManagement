@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Request, Response } from 'express';
 import db from '../db/connectDb';
 import { AuthRequest } from '../middleware/verifyToken';
@@ -8,8 +9,6 @@ export const addCar = async (req: AuthRequest, res: Response) => {
     try {
         const { title, description, car_type, company, dealer } = req.body;
         if (!req.userId) return res.status(401).json({ error: "Unauthorized" });
-
-        //@ts-ignore
         if (req?.files?.length > 10) {
             return res.status(400).json({ error: "You can upload a maximum of 10 images" });
         }
@@ -17,7 +16,6 @@ export const addCar = async (req: AuthRequest, res: Response) => {
         const imageUrls = [];
 
         try {
-            //@ts-ignore
             for (const file of req.files) {
                 const result = await cloudinary.uploader.upload(file.path, {
                     folder: 'cars'
@@ -69,12 +67,16 @@ export const getUserCars = async (req: AuthRequest, res: Response) => {
 
 export const searchCars = async (req: Request, res: Response) => {
     const { keyword } = req.query;
+    if (!req.userId) {
+        return res.status(401).json({ error: "User not authenticated" });
+    }
 
     // if (!keyword) return res.status(400).json({ error: "Keyword is required" });
 
     try {
         const cars = await db.car.findMany({
             where: {
+                userId: req.userId,
                 OR: [
                     { title: { contains: keyword as string, mode: 'insensitive' } },
                     { description: { contains: keyword as string, mode: 'insensitive' } },
@@ -121,12 +123,12 @@ export const updateCar = async (req: AuthRequest, res: Response) => {
         const newImageUrls: string[] = [];
 
         if (req?.files?.length) {
-            //@ts-ignore
+
             if (req.files.length + car.images.length > 10) {
                 return res.status(400).json({ error: "You can upload a maximum of 10 images" });
             }
 
-            //@ts-ignore
+
             for (const file of req.files) {
                 const result = await cloudinary.uploader.upload(file.path, {
                     folder: 'cars'

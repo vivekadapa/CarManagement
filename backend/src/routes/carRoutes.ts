@@ -21,7 +21,7 @@ const router = Router();
 
 router.post('/', verifyToken, upload.array('images', 10), addCar);
 router.get('/', verifyToken, getUserCars);
-router.get('/search', searchCars);
+router.get('/search',verifyToken, searchCars);
 router.get('/:id', verifyToken, getCarById);
 router.put('/:id', verifyToken, upload.array('images', 10), updateCar);
 router.delete('/:id', verifyToken, deleteCar);

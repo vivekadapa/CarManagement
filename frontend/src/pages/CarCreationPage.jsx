@@ -37,7 +37,7 @@ const CarCreationPage = () => {
         images.forEach((image, index) => {
             formData.append('images', image)
         })
-
+        
         try {
             const response = await axios.request({
                 url: `${import.meta.env.VITE_BACKEND_URL}/api/cars`,

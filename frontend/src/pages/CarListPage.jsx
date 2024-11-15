@@ -57,19 +57,23 @@ const CarListPage = () => {
                     </button>
                 </form>
             </div>
-            <h1 className="text-3xl font-bold mb-6">Car List</h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                {
-                    cars && cars.length > 0 ? (
-                        cars.map((car) => (
-                            <Link to={`/car/${car.id}`} key={car.id}>
-                                <Card car={car} />
-                            </Link>
-                        ))
-                    ) : <>No cars added</>
-                }
+            {
+                cars && cars.length > 0 ? (
+                    <>
+                        <h1 className="text-3xl font-bold mb-6">Car List</h1>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                            {
+                                cars.map((car) => (
+                                    <Link to={`/car/${car.id}`} key={car.id}>
+                                        <Card car={car} />
+                                    </Link>
+                                ))
+                            }
+                        </div>
+                    </>
+                ) : <div className='flex mt-24 text-2xl justify-center items-center'>No cars added</div>
+            }
 
-            </div>
         </div>
     )
 }
