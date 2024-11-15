@@ -101,14 +101,31 @@ export const getCarById = async (req: AuthRequest, res: Response) => {
 };
 
 
+
 export const updateCar = async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
     const { title, description, images, car_type, company, dealer } = req.body;
-
+    console.log(req.body)
     try {
         const car = await db.car.findUnique({ where: { id: parseInt(id) } });
         if (!car || car.userId !== req.userId) {
             return res.status(404).json({ error: "Car not found" });
+        }
+        const newImageUrls: string[] = [];
+
+        if (req?.files?.length) {
+            //@ts-ignore
+            if (req.files.length + car.images.length > 10) {
+                return res.status(400).json({ error: "You can upload a maximum of 10 images" });
+            }
+
+            //@ts-ignore
+            for (const file of req.files) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    folder: 'cars'
+                });
+                newImageUrls.push(result.secure_url);
+            }
         }
 
         const updatedCar = await db.car.update({
@@ -116,7 +133,7 @@ export const updateCar = async (req: AuthRequest, res: Response) => {
             data: {
                 title,
                 description,
-                images,
+                images: [...car.images, ...newImageUrls],
                 car_type,
                 company,
                 dealer,
@@ -129,6 +146,7 @@ export const updateCar = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ error: "Failed to update car" });
     }
 };
+
 
 export const deleteCar = async (req: AuthRequest, res: Response) => {
     const { id } = req.params;

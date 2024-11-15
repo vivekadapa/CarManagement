@@ -26,7 +26,7 @@ router.get('/search', searchCars);
 //@ts-ignore
 router.get('/:id', verifyToken, getCarById);
 //@ts-ignore
-router.put('/:id', verifyToken, updateCar);
+router.put('/:id', verifyToken, upload.array('images', 10), updateCar);
 //@ts-ignore
 router.delete('/:id', verifyToken, deleteCar);
 
