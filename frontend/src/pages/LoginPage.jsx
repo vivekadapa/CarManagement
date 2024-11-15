@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -18,11 +19,12 @@ const LoginPage = () => {
                 email,
                 password,
             });
-    
+
             setLoading(false);
             localStorage.setItem('token', response.data.token);
             navigate('/');
         } catch (error) {
+            console.log(error)
             setLoading(false);
             setError(error.response?.data?.message || 'Login failed. Please try again.');
         }
