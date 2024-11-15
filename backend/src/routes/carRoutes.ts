@@ -12,7 +12,7 @@ import multer from 'multer'
 
 
 // const storage = multer.memoryStorage();
-const upload = multer({ dest: "/uploads" });
+const upload = multer({ dest: 'uploads/' });
 
 
 const router = Router();
