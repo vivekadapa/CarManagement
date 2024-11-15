@@ -11,29 +11,19 @@ const SignupPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
-            const data = await response.json();
-            setLoading(false);
 
-            if (response.ok) {
-                localStorage.setItem('token', data.token);
-                navigate('/');
-            } else {
-                setError(data.message || 'Signup failed. Please try again.');
-            }
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+                email,
+                password,
+            });
+    
+            setLoading(false);
+            localStorage.setItem('token', response.data.token);
+            navigate('/');
         } catch (error) {
             setLoading(false);
-            setError('An error occurred. Please try again.');
+            setError(error.response?.data?.message || 'Signup failed. Please try again.');
         }
     };
 
