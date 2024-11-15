@@ -16,11 +16,6 @@ export default function Navbar() {
 
     const navigate = useNavigate()
 
-    const handleSearch = () => {
-
-
-    }
-
     const handleLogout = () => {
         localStorage.removeItem('token');
         navigate('/login');
@@ -36,23 +31,6 @@ export default function Navbar() {
                             <span className="ml-2 text-xl font-bold text-gray-800">Car Registry</span>
                         </Link>
                     </div>
-                    {/* <div className="hidden sm:flex ml-6">
-                        <form onSubmit={handleSearch} className="flex gap-1 items-center">
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="px-3 py-2 border rounded-md rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
-                            <button
-                                type="submit"
-                                className="px-4 py-[10px] bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
-                                Search
-                            </button>
-                        </form>
-                    </div> */}
                     <div className="hidden sm:ml-6 sm:flex sm:items-center">
                         {navItems.map((item) => (
                             <div key={item.name} className="relative">
@@ -102,23 +80,6 @@ export default function Navbar() {
                             </div>
                         ))}
 
-                        {/* <div className="pt-2 pb-3">
-                            <form onSubmit={handleSearch} className="flex items-center px-3">
-                                <input
-                                    type="text"
-                                    placeholder="Search..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="flex-grow px-3 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                />
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-indigo-600 text-white rounded-r-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                >
-                                    Search
-                                </button>
-                            </form>
-                        </div> */}
                     </div>
                 </div>
             )}

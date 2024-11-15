@@ -6,18 +6,17 @@ import { X } from 'lucide-react'
 const CarEditPage = () => {
     const { carId } = useParams()
     const navigate = useNavigate()
-    console.log(carId)
     const [car, setCar] = useState({
         title: '',
         description: '',
         images: [],
         company: '',
         dealer: '',
-        carType: ''
+        car_type: ''
     })
     const [loading, setLoading] = useState(true)
     const [newImages, setNewImages] = useState([])
-    
+
     const token = localStorage.getItem('token')
 
     useEffect(() => {
@@ -58,7 +57,8 @@ const CarEditPage = () => {
         formData.append('description', car.description)
         formData.append('company', car.company)
         formData.append('dealer', car.dealer)
-        formData.append('car_type', car.carType)
+        console.log(car.carType);
+        formData.append('car_type', car.car_type)
         newImages.forEach(image => {
             formData.append('images', image)
         })
@@ -77,7 +77,7 @@ const CarEditPage = () => {
                 throw new Error('Failed to update car listing')
             }
 
-            navigate(`/cars/${carId}`)
+            navigate(`/car/${carId}`)
         } catch (error) {
             console.error(error)
             alert('Error: ' + error.message)
@@ -170,12 +170,12 @@ const CarEditPage = () => {
                     />
                 </div>
                 <div>
-                    <label htmlFor="carType" className="block font-medium mb-1">Car Type</label>
+                    <label htmlFor="car_type" className="block font-medium mb-1">Car Type</label>
                     <select
-                        id="carType"
+                        id="car_type"
                         className="w-full border border-gray-300 p-2 rounded"
-                        value={car.carType}
-                        onChange={(e) => setCar({ ...car, carType: e.target.value })}
+                        value={car.car_type}
+                        onChange={(e) => setCar({ ...car, car_type: e.target.value })}
                         required
                     >
                         <option value="" disabled>Select car type</option>
